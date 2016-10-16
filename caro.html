@@ -1,0 +1,661 @@
+<!-------- Thiet ke va lap trinh boi Andy Crush ---------> 
+<head> 
+<title>Chơi Ca Rô - Ninja9x.Net</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<script>function setcountdown(theyear,themonth,theday){ 
+yr=theyear;mo=themonth;da=theday 
+} 
+
+setcountdown(2016,2,06) 
+
+var occasion="Xuân Bính Thân 2016. " 
+var message_on_occasion="HAPPY NEW YEAR! Mừng Xuân Bính Thâń 2016, kính chúc bạn và gia đình một năm mới An Khang Thịnh Vượng!" 
+
+var countdownwidth='480px' 
+var countdownheight='20px' 
+var countdownbgcolor='lightblack' 
+var opentags='<font face="Verdana">' 
+var closetags='</font>' 
+var montharray=new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec") 
+var crosscount='' 
+
+function start_countdown(){ 
+if (document.layers) 
+document.countdownnsmain.visibility="show" 
+else if (document.all||document.getElementById) 
+crosscount=document.getElementById&&!document.all?document.getElementById("countdownie") : countdownie 
+countdown() 
+} 
+
+if (document.all||document.getElementById) 
+document.write('<span id="countdownie" style="width:'+countdownwidth+'; background-color:'+countdownbgcolor+'"></span>') 
+
+window.onload=start_countdown 
+
+
+function countdown(){ 
+var today=new Date() 
+var todayy=today.getYear() 
+if (todayy < 1000) 
+todayy+=1900 
+var todaym=today.getMonth() 
+var todayd=today.getDate() 
+var todayh=today.getHours() 
+var todaymin=today.getMinutes() 
+var todaysec=today.getSeconds() 
+var todaystring=montharray[todaym]+" "+todayd+", "+todayy+" "+todayh+":"+todaymin+":"+todaysec 
+futurestring=montharray[mo-1]+" "+da+", "+yr 
+dd=Date.parse(futurestring)-Date.parse(todaystring) 
+dday=Math.floor(dd/(60*60*1000*24)*1) 
+dhour=Math.floor((dd%(60*60*1000*24))/(60*60*1000)*1) 
+dmin=Math.floor(((dd%(60*60*1000*24))%(60*60*1000))/(60*1000)*1) 
+dsec=Math.floor((((dd%(60*60*1000*24))%(60*60*1000))%(60*1000))/1000*1) 
+//if on day of occasion 
+if(dday<=0&&dhour<=0&&dmin<=0&&dsec<=1&&todayd==da){ 
+if (document.layers){ 
+document.countdownnsmain.document.countdownnssub.document.write(opentags+message_on_occasion+closetags) 
+document.countdownnsmain.document.countdownnssub.document.close() 
+} 
+else if (document.all||document.getElementById) 
+crosscount.innerHTML=opentags+message_on_occasion+closetags 
+return 
+} 
+//if passed day of occasion 
+else if (dday<=-1){ 
+if (document.layers){ 
+document.countdownnsmain.document.countdownnssub.document.write(opentags+"Occasion already passed! "+closetags) 
+document.countdownnsmain.document.countdownnssub.document.close() 
+} 
+else if (document.all||document.getElementById) 
+crosscount.innerHTML=opentags+"Occasion already passed! "+closetags 
+return 
+} 
+//else, if not yet 
+else{ 
+if (document.layers){ 
+document.countdownnsmain.document.countdownnssub.document.write(opentags+dday+ " days, "+dhour+" hours, "+dmin+" minutes, and "+dsec+" seconds left until "+occasion+closetags) 
+document.countdownnsmain.document.countdownnssub.document.close() 
+} 
+else if (document.all||document.getElementById) 
+crosscount.innerHTML="Chỉ còn " +opentags+dday+ " ngày "+dhour+" giờ "+dmin+" phút "+dsec+" giây nữa là đến tết nguyên đán "+occasion+closetags 
+} 
+setTimeout("countdown()",1000) 
+} </script><br>
+
+
+<script type="text/javascript">
+<!-- Begin
+/*
+Copyright kiuc.tk
+/*
+ * Notes on hue
+ *
+ * This script uses hue rotation in the following manner:
+ * hue=0   is red (#FF0000)
+ * hue=60  is yellow (#FFFF00)
+ * hue=120 is green (#00FF00)
+ * hue=180 is cyan (#00FFFF)
+ * hue=240 is blue (#0000FF)
+ * hue=300 is magenta (#FF00FF)
+ * hue=360 is hue=0 (#FF0000)
+ *
+ * Notes on the script
+ *
+ * This script should function in any browser that supports document.getElementById
+ * Đã Test Netscape7, Mozilla Firefox 1.0, and Internet Explorer 6
+ *
+ * Accessibility
+ *
+ * The script does not write the string out, but rather takes it from an existing
+ * HTML element. Therefore, users with javascript disabled will not be adverely affected.
+ * They just won't get the pretty colors.
+ */
+
+/*
+ * splits par.firstChild.data into 1 span for each letter
+ * ARGUMENTS
+ *   span - HTML element containing a text node as the only element
+ */
+function toSpans(span) {
+  var str=span.firstChild.data;
+  var a=str.length;
+  span.removeChild(span.firstChild);
+  for(var i=0; i<a; i++) {
+    var theSpan=document.createElement("SPAN");
+    theSpan.appendChild(document.createTextNode(str.charAt(i)));
+    span.appendChild(theSpan);
+  }
+}
+
+/*
+ * creates a rainbowspan object
+ * whose letters will be colored [deg] degrees of hue
+ * ARGUMENTS
+ *   span - HTML element to apply the effect to (text only, no HTML)
+ *   hue - what degree of hue to start at (0-359)
+ *   deg - how many hue degrees should be traversed from beginning to end of the string (360 => once around, 720 => twice, etc)
+ *   brt - brightness (0-255, 0 => black, 255 => full color)
+ *   spd - how many ms between moveRainbow calls (less => faster)
+ *   hspd - how many hue degrees to move every time moveRainbow is called (0-359, closer to 180 => faster)
+ */
+function RainbowSpan(span, hue, deg, brt, spd, hspd) {
+    this.deg=(deg==null?360:Math.abs(deg));
+    this.hue=(hue==null?0:Math.abs(hue)%360);
+    this.hspd=(hspd==null?3:Math.abs(hspd)%360);
+    this.length=span.firstChild.data.length;
+    this.span=span;
+    this.speed=(spd==null?50:Math.abs(spd));
+    this.hInc=this.deg/this.length;
+    this.brt=(brt==null?255:Math.abs(brt)%256);
+    this.timer=null;
+    toSpans(span);
+    this.moveRainbow();
+}
+
+/*
+ * sets the colors of the children of [this] as a hue-rotating rainbow starting at this.hue;
+ * requires something to manage ch externally
+ * I had to make the RainbowSpan class because M$IE wouldn't let me attach this prototype to [Object]
+ */
+RainbowSpan.prototype.moveRainbow = function() {
+  if(this.hue>359) this.hue-=360;
+  var color;
+  var b=this.brt;
+  var a=this.length;
+  var h=this.hue;
+
+  for(var i=0; i<a; i++) {
+
+    if(h>359) h-=360;
+
+    if(h<60) { color=Math.floor(((h)/60)*b); red=b;grn=color;blu=0; }
+    else if(h<120) { color=Math.floor(((h-60)/60)*b); red=b-color;grn=b;blu=0; }
+    else if(h<180) { color=Math.floor(((h-120)/60)*b); red=0;grn=b;blu=col=0 }
+    else if(h<240) { color=Math.floor(((h-180)/60)*b); red=0;grn=b-color;blu=b; }
+    else if(h<300) { color=Math.floor(((h-240)/60)*b); red=color;grn=0;blu=b; }
+    else { color=Math.floor(((h-300)/60)*b); red=b;grn=0;blu=b-color; }
+
+    h+=this.hInc;
+
+    this.span.childNodes[i].style.color="rgb("+red+", "+grn+", "+blu+")";
+  }
+  this.hue+=this.hspd;
+}
+// End -->
+</script>
+<h3 id="r1">http://Kiuc.tk</h3>  
+ 
+<script type="text/javascript">
+var r1=document.getElementById("r1"); //get span to apply rainbow
+var myRainbowSpan=new RainbowSpan(r1, 0, 360, 255, 50, 18); //apply static rainbow effect
+myRainbowSpan.timer=window.setInterval("myRainbowSpan.moveRainbow()", myRainbowSpan.speed);
+</script>
+<p id="r2">Nơi lưu giữ những kỉ niệm</p> 
+<script type="text/javascript">
+var r2=document.getElementById("r2"); //get span to apply rainbow
+var myRainbowSpan2=new RainbowSpan(r2, 0, 360, 255, 50, 348); //apply static rainbow effect
+myRainbowSpan2.timer=window.setInterval("myRainbowSpan2.moveRainbow()", myRainbowSpan2.speed);
+  </script>
+  
+  <br>
+  
+  
+  <script type="text/javascript">if ((document.getElementById) && window.addEventListener || window.attachEvent){ (function(){ var xCol = "#fff000"; var yCol = "#ff0000"; var zCol = "#0000ff"; var n = 6; var t = 40; var s = 0.2; var r,h,w; var d = document; var my = 10; var mx = 10; var stp = 0; var evn = 360/3; var vx = new Array(); var vy = new Array(); var vz = new Array(); var dy = new Array(); var dx = new Array(); var pix = "px"; var strictmod = ((document.compatMode) && document.compatMode.indexOf("CSS") != -1); var domWw = (typeof window.innerWidth == "number"); var domSy = (typeof window.pageYOffset == "number"); var idx = d.getElementsByTagName('div').length; for (i = 0; i < n; i++){ var dims = (i+1)/2; d.write('<div id="x'+(idx+i)+'" style="position:absolute;' +'top:0px;left:0px;width:'+dims+'px;height:'+dims+'px;' +'background-color:'+xCol+';font-size:'+dims+'px"><\/div>' +'<div id="y'+(idx+i)+'" style="position:absolute;top:0px;' +'left:0px;width:'+dims+'px;height:'+dims+'px;' +'background-color:'+yCol+';font-size:'+dims+'px"><\/div>' +'<div id="z'+(idx+i)+'" style="position:absolute;top:0px;' +'left:0px;width:'+dims+'px;height:'+dims+'px;' +'background-color:'+zCol+';font-size:'+dims+'px"><\/div>'); } if (domWw) r = window; else{ if (d.documentElement && typeof d.documentElement.clientWidth == "number" && d.documentElement.clientWidth != 0) r = d.documentElement; else{ if (d.body && typeof d.body.clientWidth == "number") r = d.body; } } function winsize(){ var oh,sy,ow,sx,rh,rw; if (domWw){ if (d.documentElement && d.defaultView && typeof d.defaultView.scrollMaxY == "number"){ oh = d.documentElement.offsetHeight; sy = d.defaultView.scrollMaxY; ow = d.documentElement.offsetWidth; sx = d.defaultView.scrollMaxX; rh = oh-sy; rw = ow-sx; } else{ rh = r.innerHeight; rw = r.innerWidth; } h = rh; w = rw; } else{ h = r.clientHeight; w = r.clientWidth; } } function scrl(yx){ var y,x; if (domSy){ y = r.pageYOffset; x = r.pageXOffset; } else{ y = r.scrollTop; x = r.scrollLeft; } return (yx == 0)?y:x; } function mouse(e){ var msy = (domSy)?window.pageYOffset:0; if (!e) e = window.event; if (typeof e.pageY == 'number'){ my = e.pageY - msy + 16; mx = e.pageX + 6; } else{ my = e.clientY - msy + 16; mx = e.clientX + 6; } if (my > h-65) my = h-65; if (mx > w-50) mx = w-50; } function assgn(){ for (j = 0; j < 3; j++){ dy[j] = my + 50 * Math.cos(stp+j*evn*Math.PI/180) * Math.sin((stp+j*25)/2) + scrl(0) + pix; dx[j] = mx + 50 * Math.sin(stp+j*evn*Math.PI/180) * Math.sin((stp+j*25)/2) * Math.sin(stp/4) + pix; } stp+=s; for (i = 0; i < n; i++){ if (i < n-1){ vx[i].top = vx[i+1].top; vx[i].left = vx[i+1].left; vy[i].top = vy[i+1].top; vy[i].left = vy[i+1].left; vz[i].top = vz[i+1].top; vz[i].left = vz[i+1].left; } else{ vx[i].top = dy[0]; vx[i].left = dx[0]; vy[i].top = dy[1]; vy[i].left = dx[1]; vz[i].top = dy[2]; vz[i].left = dx[2]; } } setTimeout(assgn,t); } function init(){ for (i = 0; i < n; i++){ vx[i] = document.getElementById("x"+(idx+i)).style; vy[i] = document.getElementById("y"+(idx+i)).style; vz[i] = document.getElementById("z"+(idx+i)).style; } winsize(); assgn(); } if (window.addEventListener){ window.addEventListener("resize",winsize,false); window.addEventListener("load",init,false); document.addEventListener("mousemove",mouse,false); } else if (window.attachEvent){ window.attachEvent("onload",init); document.attachEvent("onmousemove",mouse); window.attachEvent("onresize",winsize); } })(); } // Ban quyền kiuc.tk!</script>
+<script language="javascript"> 
+ 
+var text='☺ kiuc.tk ☺ ';
+ 
+var delay=40; // SPEED OF TRAIL
+var Xoff=16; // PIXEL COUNT FROM THE LEFT OF THE CURSOR (- VALUES GO TO LEFT)
+var Yoff=19; // PIXEL COUNT FROM THE TOP OF THE CURSOR (- VALUES GO UP)
+var txtw=12; // AMOUNT OF PIXEL SPACE EACH CHARACTER OCCUPIES
+var beghtml='<font color="#00436e"><b>'; // OPTIONAL HTML CODE THAT EFFECTS WHOLE TEXT STRING SUCH AS FONT COLOR, SIZE, ETC.
+var endhtml='</b></font>'; // END HTML CODE. MOSTLY USED IF ABOVE SETTING IS USED.
+ns4 = (navigator.appName.indexOf("Netscape")>=0 && document.layers)? true : false;
+ie4 = (document.all && !document.getElementById)? true : false;
+ie5 = (document.all && document.getElementById)? true : false;
+ns6 = (document.getElementById && navigator.appName.indexOf("Netscape")>=0 )? true: false;
+var txtA=new Array();
+text=text.split('');
+var x1=0;
+var y1=-1000;
+var t='';
+ 
+for(i=1;i<=text.length;i++){
+t+=(ns4)? '<layer left="0" top="-100" width="'+txtw+'" name="txt'+i+'" height="1">' : '<div id="txt'+i+'" style="position:absolute; top:-100px; left:0px; height:1px; width:'+txtw+'; visibility:visible;">';
+t+=beghtml+text[i-1]+endhtml;
+t+=(ns4)? '</layer>' : '</div>';
+}
+document.write(t);
+ 
+function moveid(id,x,y){
+if(ns4)id.moveTo(x,y);
+else{
+id.style.left=x+'px';
+id.style.top=y+'px';
+}}
+ 
+function animate(evt){
+x1=Xoff+((ie4||ie5)?event.clientX+document.body.scrollLeft:evt.pageX);
+y1=Yoff+((ie4||ie5)?event.clientY+document.body.scrollTop:evt.pageY);
+}
+ 
+function getidleft(id){
+if(ns4)return id.left;
+else return parseInt(id.style.left);
+}
+ 
+function getidtop(id){
+if(ns4)return id.top;
+else return parseInt(id.style.top);
+}
+ 
+function getwindowwidth(){
+if(ie4||ie5)return document.body.clientWidth+document.body.scrollLeft;
+else return window.innerWidth+pageXOffset;
+}
+ 
+function movetxts(){
+for(i=text.length;i>1;i=i-1){
+if(getidleft(txtA[i-1])+txtw*2>=getwindowwidth()){
+moveid(txtA[i-1],0,-1000);
+moveid(txtA[i],0,-1000);
+}else moveid(txtA[i], getidleft(txtA[i-1])+txtw, getidtop(txtA[i-1]));
+}
+moveid(txtA[1],x1,y1);
+}
+ 
+window.onload=function(){
+for(i=1;i<=text.length;i++)txtA[i]=(ns4)?document.layers['txt'+i]:(ie4)?document.all['txt'+i]:document.getElementById('txt'+i);
+if(ns4)document.captureEvents(Event.MOUSEMOVE);
+document.onmousemove=animate;
+setInterval('movetxts()',delay);
+}
+</script>
+<style>body{cursor: url('http://xxxpart.com/files/194692/chuotdep.jpg'), auto;}</style>
+
+<br>
+    <!------- My ajax start here -----------> 
+        <script> 
+        function ajax(url,id,eval_str){
+        if(document.getElementById){var x=(window.ActiveXObject)?new ActiveXObject("Microsoft.XMLHTTP"):new XMLHttpRequest();}
+        if(x){x.onreadystatechange=function() {
+        el=document.getElementById(id);
+        el.innerHTML='';
+        if(x.readyState==4&&x.status==200){
+        el.innerHTML='';
+        el=document.getElementById(id);
+        el.innerHTML=x.responseText;
+        eval(eval_str);
+        }
+        }
+        x.open("GET",url,true);x.send(null);
+        }
+        }
+        </script> 
+ 
+    <!------ End ajax --------> 
+ 
+</head> 
+<style> 
+.cell {
+	width:30px;
+	height:30px;
+	text-align:center;
+}
+#msg {
+	color:red;
+	font-size:24pt;
+}
+#state {
+	width:500px;
+	height:100px;
+	color:green;
+	overflow:auto;
+	border:black solid 1px;
+}
+</style> 
+ 
+<input type=radio name=style value=1 onclick="changeStyle(this.value);">Style 1: ♀ ♂
+<input type=radio name=style value=2 onclick="changeStyle(this.value);">Style 2: x o
+<input type=radio name=style value=3 onclick="changeStyle(this.value);" checked>Style 3: <img src="http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/19.gif"> <img src="http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/31.gif"> 
+<script> 
+ 
+function initArray() {
+	var i, j;
+	var c = new Array();
+	for (i = 0; i < SIZE[0]; i++) {
+		c[i] = new Array();
+		for (j = 0; j < SIZE[1]; j++)
+			c[i][j] = 0;
+	}
+	return c;
+}
+ 
+function loadCell() {
+	var c = new Array();
+	for (i = 0; i < SIZE[0]; i++) {
+		c[i] = new Array();
+	}
+	var i, cells = document.getElementsByTagName("td");
+	for (i = 0; i < cells.length; i++) {
+		var cell = cells[i];
+		var _pos, _r, _c;
+		var r = getAttributes(cell);
+		_pos = new String(r["cell"]);
+		_r = eval(_pos.split(",")[0]);
+		_c = eval(_pos.split(",")[1]);
+		c[_r][_c] = cell;
+	}
+	
+	return c;
+}
+ 
+var SIZE = [15, 20]; // so o chieu ngang, chieu doc
+var CELL = initArray(); // mang luu diem
+var TABLE;
+var X = true; // luot danh
+var END = false;
+var HCOLOR = 'pink';
+var VIEW_LOG = false;
+ 
+var signal = new Array();
+signal[X] = "<img src='http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/19.gif'>";
+signal[!X] = "<img src='http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/31.gif'>";
+//signal[X] = "♀";
+//signal[!X] = "♂";
+ 
+var POINT = new Array();
+POINT[X] = 1;
+POINT[!X] = 2;
+ 
+var PERSON = new Array();
+PERSON[X] = "X";
+PERSON[!X] = "Y";
+ 
+function changeStyle(v) {
+	var X = true;
+	v = eval(v);
+	switch (v) {
+		case 1:
+			signal[X] = "♀";
+			signal[!X] = "♂";
+			break;
+		case 2:
+			signal[X] = "x";
+			signal[!X] = "o";
+			break;
+		case 3:
+			signal[X] = '<img src="http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/19.gif">';
+			signal[!X] = '<img src="http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/31.gif">';
+			break;
+		default:
+				break;
+	}
+	repaint();
+}
+ 
+function repaint() {
+	var i, j;
+	var c, r, p;
+	for (i = 0; i < SIZE[0]; i++) {
+		for (j = 0; j < SIZE[1]; j++) {
+			c = TABLE[i][j];
+			//alert(i+"-"+j);
+			r = getAttributes(c);
+			p = eval(r["point"]);
+			if (p == POINT[X]) {
+				c.innerHTML = signal[X];
+			} else if (p == POINT[!X]) {
+				c.innerHTML = signal[!X];
+			}
+		}
+	}
+}
+ 
+// ve ban co
+function drawBoard() {
+	var i, j;
+	sBoard = "<table border='0px' cellpadding=0 cellspacing=1 bgcolor=#CCCCCC>";
+	for (i = 0; i < SIZE[0]; i++) {
+		sBoard += "<tr>";
+		for (j = 0; j < SIZE[1]; j++) {
+			sBoard += "<td bgcolor=#FFFFFF class=cell cell='" + i + "," + j + "' point=0>&nbsp;</td>";
+		}
+		sBoard += "</tr>";
+	}
+	sBoard += "</table>";
+	document.write(sBoard);
+	TABLE = loadCell();
+}
+ 
+// gan su kien click va xu ly
+function addCellEvent() {
+	var cells = document.getElementsByTagName("td");
+	var i;
+	var kt=0;
+	for (i = 0; i < cells.length; i++) {
+		cells[i].onclick = function() {
+			if (END) {
+				warn("Xong rồi. Đồ con g�!");
+				return;
+			}
+			var r;
+			r = getAttributes(this);
+			//roalert(r["point"]);
+			if (r["point"] != 0) { // o da duoc danh dau
+				warn("He he, nhanh lên con gà");
+				return;
+			}
+			X = !X;
+			setPoint(this, POINT[X]);
+			this.innerHTML = signal[X];
+			//alert(i);
+			warn(PERSON[X] + " Nhanh lên con gà!, " + PERSON[!X] + " đang tính, lắm mồm!");
+			var _pos, _r, _c;
+			_pos = new String(r["cell"]);
+			_r = eval(_pos.split(",")[0]);
+			_c = eval(_pos.split(",")[1]);
+			CELL[_r][_c] = POINT[X];
+			log(_r + "," + _c + " = " + CELL[_r][_c]);
+			//kt++;
+			ajax('test.php?x='+_r+'&y='+_c,'hienthi');
+			var w = checkWin(_r, _c);
+			if (w) warn(PERSON[X] + " Thắng roài, đồ con gà. <a href='javascript:location.href=location.href'>Lại nhé!</a>");
+		}}
+ 
+}
+ 
+ 
+// kiem tra sau khi danh o r,c da co ai thang chua
+function checkWin(r, c) {
+	var i, j;
+	var t, v = CELL[r][c], nv, pv;
+	var rhead, rtail;
+	var chead, ctail;
+	// cung hang
+	t = 1;
+	chead = c;
+	rhead = r;
+	rtail = r;
+	ctail = c;
+	for (j = c + 1; j < SIZE[1]; j++) {
+		nv = CELL[r][j];
+		if (nv == v) {
+			t += 1;
+			ctail = j;
+		}
+		else
+			break;
+	}
+	for (j = c - 1; j >= 0; j--) {
+		pv = CELL[r][j];
+		if (pv == v) {
+			t += 1;
+			chead = j;
+		}
+		else
+			break;
+	}
+	
+	if (t >= 5) {
+		// highlight
+		for (j = chead; j <= ctail; j++) {
+			TABLE[r][j].style.backgroundColor = HCOLOR;
+		}
+		END = true;
+		return true;
+	}
+	// cung cot
+	t = 1;
+	chead = c;
+	rhead = r;
+	rtail = r;
+	ctail = c;
+	for (i = r + 1; i < SIZE[0]; i++) {
+		nv = CELL[i][c];
+		if (nv == v) {
+			t += 1;
+			rtail = i;
+		}
+		else
+			break;
+	}
+	for (i = r - 1; i >= 0; i--) {
+		pv = CELL[i][c];
+		if (pv == v) {
+			t += 1;
+			rhead = i;
+		}
+		else
+			break;
+	}
+	if (t >= 5) {
+		// highlight
+		for (i = rhead; i <= rtail; i++) {
+			TABLE[i][c].style.backgroundColor = HCOLOR;
+		}
+		END = true;
+		return true;
+	}
+	// cheo /
+	chead = c;
+	ctail = c;
+	rhead = r;
+	rtail = r;
+	t = 1;
+	i = r - 1;
+	for (j = c + 1; j < SIZE[1]; j++) {
+		if (i < 0) break;
+		pv = CELL[i--][j];
+		if (pv == v) {
+			t += 1;
+			ctail = j;
+			rtail = i+1;
+		}
+		else
+			break;
+	}
+	i = r + 1;
+	for (j = c - 1; j >= 0; j--) {
+		if (i >= SIZE[0]) break;
+		pv = CELL[i++][j];
+		if (pv == v) {
+			t += 1;
+			chead = j;
+			rhead = i-1;
+		}
+		else
+			break;
+	}
+	if (t >= 5) {
+		END = true;
+		for (j = chead; j <= ctail; j++) {
+			TABLE[rhead--][j].style.backgroundColor = HCOLOR;
+		}
+		return true;
+	}
+	// cheo \
+	chead = c;
+	ctail = c;
+	rhead = r;
+	rtail = r;
+	t = 1;
+	i = r + 1;
+	for (j = c + 1; j < SIZE[1]; j++) {
+		if (i >= SIZE[0]) break;
+		pv = CELL[i++][j];
+		if (pv == v) {
+			t += 1;
+			ctail = j;
+			rtail = i-1;
+		}
+		else
+			break;
+	}
+	i = r - 1;
+	for (j = c - 1; j >= 0; j--) {
+		if (i < 0) break;
+		pv = CELL[i--][j];
+		if (pv == v) {
+			t += 1;
+			chead = j;
+			rhead = i+1;
+		}
+		else
+			break;
+	}
+	if (t >= 5) {
+		END = true;
+		for (j = chead; j <= ctail; j++) {
+			TABLE[rhead++][j].style.backgroundColor = HCOLOR;
+		}
+		return true;
+	}	
+}
+ 
+// thay doi diem cho o (khi duoc danh dau)
+function setPoint(cell, value) {
+	cell.attributes.getNamedItem("point").value = value;
+}
+ 
+// lay toan bo cac attribute cua o, tra ve mang dang dictionary
+function getAttributes(cell) {
+	var r = new Array();
+	var as = cell.attributes;
+	for (i = 0; i < as.length; i++) {
+		r[as[i].name] = as[i].value;
+	}
+	return r;
+}
+ 
+// luu cac buoc danh dau
+function log(s) {
+	var c;
+	c = document.getElementById("state").innerHTML;
+	c = (c == "") ? (c) : (c + "<br>");
+	document.getElementById("state").innerHTML = c + s;
+}
+ 
+// thong bao tuong ung sau su kien click
+function warn(s) {
+	document.getElementById("msg").innerHTML = s;
+}
+ 
+// call above written function, enjoy now
+drawBoard();
+addCellEvent();
+</script> 
+<div id="msg">Sẵn sàng!</div> 
+<div id="state"></div> 
+<script> 
+if (!VIEW_LOG) {
+	document.getElementById("state").style.display = 'none';
+}
+</script> 
+<style>
+ HTML,BODY{cursor: url("http://ninja9x.net/andycrush/clovel.cur"), url(""), auto;}
+ </style>
+ <script type="text/javascript" src="http://ninja9x.net/trochuot.js"></script>
+<div id="hienthi">abc
+</div>
